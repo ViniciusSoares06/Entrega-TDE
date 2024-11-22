@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acessite</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="img/acessibilidade_icon.png">
+</head>
+<body>
+    <header>
+        <h1>Acessite</h1>
+        <div id="btnFonts">
+            <button id="aumentarFonte" onclick="aumentarFonte()">Aumentar tamanho da fonte</button>
+            <button id="diminuirFonte" onclick="diminuirFonte()">Diminuir tamanho da fonte</button>  
+        </div>
+    </header>
+    <nav>
+
+    </nav>
+    <div class="container">
+        <nav>
+            <h2>Menu de navegação</h2>
+            <button id="btn1" onclick="lerTexto('ul1')">Botão de leitura do menu de navegação</button>
+
+            <ul id="ul1">
+                <a href="index.html"><li>1 - Página de início</li></a>
+                <a href="sobre.html"><li>2 - Sobre o Acessite</li></a>
+                <a href="relatar.html"><li>3 - Conte um relato para nós</li></a>
+                <a href="relatos.html"><li>4 - Leia um relato de alguém</li></a>
+                <a href="artigos.html"><li>5 - Acesse artigos sobre acessibilidade</li></a>
+            </ul>
+
+
+        </nav>
+
+        <section id="section1">
+            <h2>Relatos de nossos usuários</h2>
+            <button id="btn1" onclick="lerTexto('section1')">Botão de leitura dos relatos de nossos usuários</button>
+        
+            <div id="textos">
+                <div class="texto">
+                    <h4>Maria Silva - Acessibilidade no transporte público</h4>
+                    <p>“Eu sou usuária de cadeira de rodas e enfrento dificuldades quase todos os dias ao utilizar o transporte público na minha cidade. As rampas de acesso nos ônibus não são adequadas, algumas são muito íngremes, e em várias ocasiões, o elevador nas estações de metrô simplesmente não funciona. Isso faz com que a mobilidade seja extremamente difícil e, muitas vezes, fico atrasada ou, em alguns casos, sou forçada a cancelar meus compromissos. Eu realmente espero que as autoridades vejam a importância de melhorar o transporte público para pessoas com deficiência, para que todos possam se locomover com dignidade e sem obstáculos.”</p>
+                </div>
+                <div class="texto">
+                    <h4>João Pereira - Acessibilidade digital em sites de e-commerce</h4>
+                    <p>“Sou deficiente visual e, como qualquer outra pessoa, preciso comprar online. No entanto, tenho dificuldades enormes para navegar na maioria dos sites de e-commerce. Muitos deles não têm uma navegação eficiente para leitores de tela, o que me obriga a contar com a ajuda de outras pessoas ou perder muito tempo tentando entender os produtos. Isso é uma grande frustração, pois o e-commerce poderia ser uma ferramenta de autonomia para mim e para outros deficientes visuais. Fico pensando o quanto seria simples implementar boas práticas de acessibilidade e como isso faria uma grande diferença para todos.”</p>
+                </div>
+                <div class="texto">
+                    <h4>Luiza Costa - Acessibilidade em eventos culturais</h4>
+                    <p>“Eu fui a um evento cultural recentemente e fiquei muito frustrada por não poder acompanhar as apresentações da forma que gostaria. Sou surda e, ao chegar no local, percebi que não havia intérprete de Libras, nem qualquer tipo de legenda para as apresentações. Fiquei completamente de fora do evento, sem poder entender nada do que estava acontecendo. Eu sei que muitas vezes eventos culturais não pensam em acessibilidade, mas isso precisa mudar. A cultura deve ser acessível a todos, sem exceção. É importante que os organizadores comecem a considerar a inclusão de pessoas com deficiência auditiva, oferecendo tradução em Libras e legendas sempre que possível.”</p>
+                </div>
+            </div>
+        </section>
+        
+        <aside id="news"></aside>
+    </div>
+
+    <footer>
+        <p>&copy; Acessite. Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        if ('speechSynthesis' in window) {
+            console.log('Web Speech API suportada!');
+        } else {
+            alert('Seu navegador não suporta a Web Speech API.');
+        }
+
+        function lerTexto(id) {
+            let texto = document.getElementById(id).innerText;
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'pt-BR';
+            utterance.rate = 4;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://newsapi.org/v2/everything?q=accessibility&apiKey=454f72bf11304f0b9f1f6e314781d953&language=pt&sortBy=publishedAt&pageSize=5')}`;
+
+        async function carregarNoticias() {
+            try {
+                const resposta = await fetch(url);
+                const dados = await resposta.json();
+
+                console.log(dados);
+
+                if (dados.contents) {
+                    const noticias = JSON.parse(dados.contents).articles;
+
+                    if (Array.isArray(noticias) && noticias.length > 0) {
+                        let html = '<h2>Últimas Notícias sobre Acessibilidade</h2><button onclick=\"lerTexto(\'news\')\">Botão de leitura de Notícias</button><ul>';
+                        
+
+
+                        noticias.forEach(noticia => {
+                            html += `
+                                <li>
+                                    <a href="${noticia.url}" target="_blank">${noticia.title}</a><br>
+                                    <p>${noticia.description}</p>
+                                </li>
+                            `;
+                        });
+
+                        html += '</ul>';
+                        document.getElementById('news').innerHTML = html;
+                    } else {
+                        document.getElementById('news').innerHTML = '<p>Não há notícias disponíveis.</p>';
+                    }
+                } else {
+                    document.getElementById('news').innerHTML = '<p>Não foi possível carregar as notícias.</p>';
+                }
+            } catch (erro) {
+                console.error('Erro ao carregar as notícias:', erro);
+                document.getElementById('news').innerHTML = '<p>Erro ao carregar as notícias.</p>';
+            }
+        }
+
+        let aumentoClicks = 0;
+
+        function alterarFonte(tamanho) {
+            const elementos = document.querySelectorAll("body, h1, h2, h3, h4, p, ul, li");
+            elementos.forEach(elemento => {
+                const style = window.getComputedStyle(elemento);
+                const currentSize = parseFloat(style.fontSize);
+                elemento.style.fontSize = `${currentSize + tamanho}px`;
+            });
+        }
+
+        function aumentarFonte() {
+            if (aumentoClicks < 6) {
+                alterarFonte(2);
+                aumentoClicks++;
+            }
+        }
+
+        function diminuirFonte() {
+            if (aumentoClicks > 0) {
+                alterarFonte(-2);
+                aumentoClicks--;
+            }
+        }
+
+        window.onload = carregarNoticias;
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acessite</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="img/acessibilidade_icon.png">
+</head>
+<body>
+    <header>
+        <h1>Acessite</h1>
+        <div id="btnFonts">
+            <button id="aumentarFonte" onclick="aumentarFonte()">Aumentar tamanho da fonte</button>
+            <button id="diminuirFonte" onclick="diminuirFonte()">Diminuir tamanho da fonte</button>  
+        </div> 
+    </header>
+    <nav>
+
+    </nav>
+    <div class="container">
+        <nav>
+            <h2>Menu de navegação</h2>
+            <button id="btn1" onclick="lerTexto('ul1')">Botão de leitura do menu de navegação</button>
+
+            <ul id="ul1">
+                <a href="index.html"><li>1 - Página de início</li></a>
+                <a href="sobre.html"><li>2 - Sobre o Acessite</li></a>
+                <a href="relatar.html"><li>3 - Conte um relato para nós</li></a>
+                <a href="relatos.html"><li>4 - Leia um relato de alguém</li></a>
+                <a href="artigos.html"><li>5 - Acesse artigos sobre acessibilidade</li></a>
+            </ul>
+
+
+        </nav>
+        <section id="section1">
+            <h2>Leia os Artigos sobre Acessibilidade</h2>
+            <button id="btn1" onclick="lerTexto('section1')">Botão de leitura dos artigos</button>
+            
+            <div id="textos">
+                <article class="texto">
+                    <a href="http://www.seer.ufsj.edu.br/recom/article/view/3575" class="leia-mais" aria-label="Leia o artigo completo sobre Universalidade do acesso e acessibilidade no quotidiano da atenção primária: vivências de usuários do SUS"><h3>Universalidade do acesso e acessibilidade no quotidiano da atenção primária: vivências de usuários do SUS</h3></a>
+                    <p>“A realidade vivenciada pelos usuários indica que ainda não foi alcançada a idealização de um Sistema universal, equânime e integral. Ademais, a pesquisa possibilitou reflexões de todos os atores envolvidos, usuários, profissionais de saúde e gestores, sobre o exercício da participação social no SUS e a formação de sujeitos proativos na tomada de decisões políticas para o cumprimento e vigor das legislações que implementamo SUS.”</p>
+                </article>
+
+                <article class="texto">
+                    <a href="https://www.redalyc.org/journal/4979/497965721004/html/" class="leia-mais" aria-label="Leia o artigo completo sobre Barreiras de acessibilidade urbana: cotidiano das famílias de crianças com deficiências neurológicas"><h3>Barreiras de acessibilidade urbana: cotidiano das famílias de crianças com deficiências neurológicas</h3></a>
+                    <p>“Este estudo tem como objetivo compreender as barreiras de acessibilidades a partir da visão das mães de crianças com deficiências neurológicas. Trata-se de uma pesquisa transversal, qualitativa, realizada com 20 mães de crianças em acompanhamento em ambulatório de um município mineiro de fevereiro a setembro de 2019. Constatou-se que 15 delas pertenciam à faixa etária de 31 a 45 anos e 12 eram casadas. Em relação às crianças, 70% eram do sexo masculino, e 95% tinham 17 meses ou mais. De acordo com a topografia, houve predomínio da quadriplegia, somando 95% das crianças. Duas categorias foram construídas a partir das falas das mães: “Barreiras nos Transportes” e, “Barreiras Urbanísticas”, apontando assim, descaso com as adaptações para deficientes, principalmente no que diz respeito ao funcionamento dos dispositivos urbanísticos e transporte coletivo. As barreiras de acessibilidade não apenas dificultam a locomoção, mas também prejudicam a inclusão e aumentam a demanda e preocupação dos familiares.”</p>
+                </article>
+
+                <article class="texto">
+                    <a href="https://arquivos.cruzeirodosuleducacional.edu.br/principal/old/revista_educacao/pdf/volume_2/rev_nº2_10_arruda.pdf" class="leia-mais" aria-label="Leia o artigo completo sobre Acessibilidade no cotidiano de pessoas com deficiência visual"><h3>Acessibilidade no cotidiano de pessoas com deficiência visual</h3></a>
+                    <p>O objetivo deste artigo é refletir sobre a inclusão social e questões de acessibilidade, relacionandoas às políticas públicas e às pessoas com deficiência visual, incluindo nesse prisma a cegueira e a baixa visão, na prática de tarefas diárias. A inclusão social mobiliza a participação de pessoas com deficiência nas diferentes situações do cotidiano. A habilitação ou reabilitação facilita a aprendizagem das tarefas diárias e contribui para que a tecnologia assistiva ou ajudas técnicas sejam utilizadas. A construção de conhecimentos, a acessibilidade dos ambientes, e a aquisição de ajudas técnicas facilitam a prática das tarefas diárias e maximizam a independência e autonomia no cotidiano. Contudo, ainda há muitas barreiras para atingir o ideatário da inclusão soacial.”</p>
+
+                </article>
+            </div>
+        </section>
+            <aside id="news"></aside>
+        </div>
+
+    <footer>
+        <p>&copy; Acessite. Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        if ('speechSynthesis' in window) {
+            console.log('Web Speech API suportada!');
+        } else {
+            alert('Seu navegador não suporta a Web Speech API.');
+        }
+
+        function lerTexto(id) {
+            let texto = document.getElementById(id).innerText;
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'pt-BR';
+            utterance.rate = 4;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://newsapi.org/v2/everything?q=accessibility&apiKey=454f72bf11304f0b9f1f6e314781d953&language=pt&sortBy=publishedAt&pageSize=5')}`;
+
+        async function carregarNoticias() {
+            try {
+                const resposta = await fetch(url);
+                const dados = await resposta.json();
+
+                console.log(dados);
+
+                if (dados.contents) {
+                    const noticias = JSON.parse(dados.contents).articles;
+
+                    if (Array.isArray(noticias) && noticias.length > 0) {
+                        let html = '<h2>Últimas Notícias sobre Acessibilidade</h2><button onclick=\"lerTexto(\'news\')\">Botão de leitura de Notícias</button><ul>';
+                        
+
+
+                        noticias.forEach(noticia => {
+                            html += `
+                                <li>
+                                    <a href="${noticia.url}" target="_blank">${noticia.title}</a><br>
+                                    <p>${noticia.description}</p>
+                                </li>
+                            `;
+                        });
+
+                        html += '</ul>';
+                        document.getElementById('news').innerHTML = html;
+                    } else {
+                        document.getElementById('news').innerHTML = '<p>Não há notícias disponíveis.</p>';
+                    }
+                } else {
+                    document.getElementById('news').innerHTML = '<p>Não foi possível carregar as notícias.</p>';
+                }
+            } catch (erro) {
+                console.error('Erro ao carregar as notícias:', erro);
+                document.getElementById('news').innerHTML = '<p>Erro ao carregar as notícias.</p>';
+            }
+        }
+
+        let aumentoClicks = 0;
+
+        function alterarFonte(tamanho) {
+            const elementos = document.querySelectorAll("body, h1, h2, h3, h4, p, ul, li");
+            elementos.forEach(elemento => {
+                const style = window.getComputedStyle(elemento);
+                const currentSize = parseFloat(style.fontSize);
+                elemento.style.fontSize = `${currentSize + tamanho}px`;
+            });
+        }
+
+        function aumentarFonte() {
+            if (aumentoClicks < 6) {
+                alterarFonte(2);
+                aumentoClicks++;
+            }
+        }
+
+        function diminuirFonte() {
+            if (aumentoClicks > 0) {
+                alterarFonte(-2);
+                aumentoClicks--;
+            }
+        }
+
+        window.onload = carregarNoticias;
+    
+    </script>
+</body>
+</html>

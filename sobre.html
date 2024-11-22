@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acessite</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="img/acessibilidade_icon.png">
+</head>
+<body>
+    <header>
+        <h1>Acessite</h1>
+        <div id="btnFonts">
+            <button id="aumentarFonte" onclick="aumentarFonte()">Aumentar tamanho da fonte</button>
+            <button id="diminuirFonte" onclick="diminuirFonte()">Diminuir tamanho da fonte</button>  
+        </div> 
+    </header>
+    <nav>
+
+    </nav>
+    <div class="container">
+        <nav>
+            <h2>Menu de navegação</h2>
+            <button id="btn1" onclick="lerTexto('ul1')">Botão de leitura do menu de navegação</button>
+
+            <ul id="ul1">
+                <a href="index.html"><li>1 - Página de início</li></a>
+                <a href="sobre.html"><li>2 - Sobre o Acessite</li></a>
+                <a href="relatar.html"><li>3 - Conte um relato para nós</li></a>
+                <a href="relatos.html"><li>4 - Leia um relato de alguém</li></a>
+                <a href="artigos.html"><li>5 - Acesse artigos sobre acessibilidade</li></a>
+            </ul>
+
+
+        </nav>
+        <section id="section1">
+            <h2>Sobre o Acessite</h2>
+            <button id="btn1" onclick="lerTexto('section1')">Botão de leitura do parágrafo "Sobre o Acessite"</button>
+            <p id="p1">
+                O Acessite é uma plataforma criada com o objetivo de promover a inclusão digital, 
+                oferecendo recursos de acessibilidade para garantir que todos, incluindo pessoas com deficiências 
+                ou limitações temporárias, possam navegar e interagir com os conteúdos de forma eficaz.
+                Nosso foco é proporcionar um ambiente digital acessível e seguro para todos os usuários, 
+                oferecendo funcionalidades como leitura em voz alta de textos, tradução em Libras, 
+                e outras ferramentas que facilitam a experiência de navegação.
+                Acreditamos que a acessibilidade é um direito de todos, e estamos comprometidos em promover 
+                a inclusão através da tecnologia, garantindo que o acesso à informação seja universal.
+            </p>
+        </section>
+        
+        <aside id="news"></aside>
+    </div>
+
+    <footer>
+        <p>&copy; Acessite. Todos os direitos reservados</p>
+    </footer>
+
+    <script>
+        if ('speechSynthesis' in window) {
+            console.log('Web Speech API suportada!');
+        } else {
+            alert('Seu navegador não suporta a Web Speech API.');
+        }
+
+        function lerTexto(id) {
+            let texto = document.getElementById(id).innerText;
+            const utterance = new SpeechSynthesisUtterance(texto);
+            utterance.lang = 'pt-BR';
+            utterance.rate = 4;
+            utterance.pitch = 1;
+            window.speechSynthesis.speak(utterance);
+        }
+
+        const url = `https://api.allorigins.win/get?url=${encodeURIComponent('https://newsapi.org/v2/everything?q=accessibility&apiKey=454f72bf11304f0b9f1f6e314781d953&language=pt&sortBy=publishedAt&pageSize=5')}`;
+
+        async function carregarNoticias() {
+            try {
+                const resposta = await fetch(url);
+                const dados = await resposta.json();
+
+                console.log(dados);
+
+                if (dados.contents) {
+                    const noticias = JSON.parse(dados.contents).articles;
+
+                    if (Array.isArray(noticias) && noticias.length > 0) {
+                        let html = '<h2>Últimas Notícias sobre Acessibilidade</h2><button onclick=\"lerTexto(\'news\')\">Botão de leitura de Notícias</button><ul>';
+                        
+
+
+                        noticias.forEach(noticia => {
+                            html += `
+                                <li>
+                                    <a href="${noticia.url}" target="_blank">${noticia.title}</a><br>
+                                    <p>${noticia.description}</p>
+                                </li>
+                            `;
+                        });
+
+                        html += '</ul>';
+                        document.getElementById('news').innerHTML = html;
+                    } else {
+                        document.getElementById('news').innerHTML = '<p>Não há notícias disponíveis.</p>';
+                    }
+                } else {
+                    document.getElementById('news').innerHTML = '<p>Não foi possível carregar as notícias.</p>';
+                }
+            } catch (erro) {
+                console.error('Erro ao carregar as notícias:', erro);
+                document.getElementById('news').innerHTML = '<p>Erro ao carregar as notícias.</p>';
+            }
+        }
+
+        let aumentoClicks = 0;
+
+        function alterarFonte(tamanho) {
+            const elementos = document.querySelectorAll("body, h1, h2, h3, h4, p, ul, li");
+            elementos.forEach(elemento => {
+                const style = window.getComputedStyle(elemento);
+                const currentSize = parseFloat(style.fontSize);
+                elemento.style.fontSize = `${currentSize + tamanho}px`;
+            });
+        }
+
+        function aumentarFonte() {
+            if (aumentoClicks < 6) {
+                alterarFonte(2);
+                aumentoClicks++;
+            }
+        }
+
+        function diminuirFonte() {
+            if (aumentoClicks > 0) {
+                alterarFonte(-2);
+                aumentoClicks--;
+            }
+        }
+
+        window.onload = carregarNoticias;
+    
+    </script>
+</body>
+</html>
